@@ -1,0 +1,432 @@
+---
+title: "Google Data Analytics Capstone"
+author: "Afnan A. Yaqub"
+date: "2022-08-15"
+output:
+  pdf_document: default
+  html_document: default
+editor_options: null
+chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## **Cyclistic Bike-Share Analysis**
+
+### **Scenario**
+
+
+  In this case study my role is as a data analyst for *Cyclisitic*, a fictional bike-share company in Chicago.
+  
+  Cyclistic has two types of users.
+  
+* Annual Members
+* Casual Riders
+
+The director of marketing, Lily Moreno, believes that Cyclistic's future success depends on increasing the number of annual members. Me and my team have been tasked to identify how Casual Riders and Annual Members use Cyclistic bikes differently by analyzing the historical ride data.
+
+The insights achieved from the data set will be shared with the stakeholders i.e. the director of marketing and the executive team. The marketing team at Cyclistic will design a marketing campaign aimed at converting casual riders to annual members and submit for approval to the stakeholders.
+
+### **The Analysis Process**
+  The analysis process involves the following steps.
+  
+1. **Ask**: Ask the right questions, to define the problem, that the analysis must provide an answer to.
+2. **Prepare**: Clean and format the historical data so that it can be processed and analyzed.
+3. **Process**: Extract useful information in the form of the variables that correctly represent the answers to the questions.
+4. **Analyze**: Perform the analysis to achieve the useful insights into the historical data.
+5. **Visualize and Share**: Prepare the visualizations and dashboards for presenting the analysis to the stakeholders.
+6. **Act**: Implement marketing campaign based on the outcome of the analysis (Excluded in this capstone).
+
+##### **1. Ask**
+The following questions must be answered by the analysis for the company to design and run a successful marketing campaign.
+
+i. How do annual members and casual riders use Cyclistic bikes differently?
+ii. Why would casual riders buy Cyclistic annual memberships?
+iii. How can Cyclistic use digital media to influence casual riders to become members?
+
+##### **2. Prepare**
+The historical data set of rides since 2013 is provided by the company as downloadable zip files [*here*](https://divvy-tripdata.s3.amazonaws.com/index.html). 
+
+* 2013 dataset is for the complete year.
+* 2014-2017 datasets for each year is in two sets of 6 months.
+* 2018-2020 datasets from 1st quarter of 2018 to 1st quarter of 2020 is available on quarterly basis.
+* 2020-2022 datasets from April 2020 till July 2022 is available on monthly basis.
+
+Since the data is provided by the company itself, it is considered reliable. In order to work with current data I will be using the ride history of past 12 months i.e. August, 2021 to July, 2022. These zip files contain the data in comma separated values (CSV) format.
+
+The programming language used in this analysis is R. First we install the libraries necessary to read the csv files.
+
+```{r installing required packages}
+# setwd("E:/Projects/R/My Data Sources/Cyclistic/")
+# install.packages("tidyverse", repos = "http://cran.us.r-project.org")
+# install.packages("janitor", repos = "http://cran.us.r-project.org")
+# install.packages("dplyr", repos = "http://cran.us.r-project.org")
+# install.packages("skimr", repos = "http://cran.us.r-project.org")
+# install.packages("kableExtra", repos = "http://cran.us.r-project.org")
+```
+
+
+
+```{r loading required libraries, results='hide'}
+library(tidyverse)
+library(janitor)
+library(dplyr)
+library(skimr)
+library(lubridate)
+library(tibble)
+library(kableExtra)
+```
+
+The first step of preparation is to load the necessary files into dataframes for initial analysis. 
+
+```{r loading trip data to dataframes, echo=TRUE}
+
+tripdata_202108 <- read.csv("202108-divvy-tripdata.csv")
+tripdata_202109 <- read.csv("202109-divvy-tripdata.csv")
+tripdata_202110 <- read.csv("202110-divvy-tripdata.csv")
+tripdata_202111 <- read.csv("202111-divvy-tripdata.csv")
+tripdata_202112 <- read.csv("202112-divvy-tripdata.csv")
+tripdata_202201 <- read.csv("202201-divvy-tripdata.csv")
+tripdata_202202 <- read.csv("202202-divvy-tripdata.csv")
+tripdata_202203 <- read.csv("202203-divvy-tripdata.csv")
+tripdata_202204 <- read.csv("202204-divvy-tripdata.csv")
+tripdata_202205 <- read.csv("202205-divvy-tripdata.csv")
+tripdata_202206 <- read.csv("202206-divvy-tripdata.csv")
+tripdata_202207 <- read.csv("202207-divvy-tripdata.csv")
+```
+
+Then step by step I visualized each dataframe using the glimpse() function from dplyr library in tidyverse package.
+
+```{r performing initial data analysis}
+
+glimpse(tripdata_202108)
+glimpse(tripdata_202109)
+glimpse(tripdata_202110)
+glimpse(tripdata_202111)
+glimpse(tripdata_202112)
+glimpse(tripdata_202201)
+glimpse(tripdata_202202)
+glimpse(tripdata_202203)
+glimpse(tripdata_202204)
+glimpse(tripdata_202205)
+glimpse(tripdata_202206)
+glimpse(tripdata_202207)
+```
+
+First the column names and datatypes are verified for consistency and then the formatting issues are dealt with. It can be seen that dataframes have time stamps in different formats. The dataframes for August, 2021 through October, 2021 and May, 2022 through July, 2022 have dates in Day/Month/Year Hour:Minute format. On the other hand the dataframes for November, 2021 through April, 2022 have dates in Year-Month-Day Hour:Minute:Second format. These data frames have to be made consistent to merge them into a single dataframe.
+
+The started_at and ended_at column values are converted to POSIXct type using lubridate library functions. For dataframes with Day/Month/Year Hour:Minute format dmy_hm() function is used.
+
+```{r formatting timestamp for day/month/year hour:minute data}
+
+tripdata_202108$started_at <- dmy_hm(tripdata_202108$started_at)
+tripdata_202108$ended_at <- dmy_hm(tripdata_202108$ended_at)
+
+tripdata_202109$started_at <- dmy_hm(tripdata_202109$started_at)
+tripdata_202109$ended_at <- dmy_hm(tripdata_202109$ended_at)
+
+tripdata_202110$started_at <- dmy_hm(tripdata_202110$started_at)
+tripdata_202110$ended_at <- dmy_hm(tripdata_202110$ended_at)
+
+tripdata_202205$started_at <- dmy_hm(tripdata_202205$started_at)
+tripdata_202205$ended_at <- dmy_hm(tripdata_202205$ended_at)
+
+tripdata_202206$started_at <- dmy_hm(tripdata_202206$started_at)
+tripdata_202206$ended_at <- dmy_hm(tripdata_202206$ended_at)
+
+tripdata_202207$started_at <- dmy_hm(tripdata_202207$started_at)
+tripdata_202207$ended_at <- dmy_hm(tripdata_202207$ended_at)
+```
+
+Similarly, for dataframes with Year-Month-Day Hour:Minute:Second format ymd_hms() function was used.
+
+```{r formatting timestamp for year-month-day hour:minute:second data}
+
+tripdata_202111$started_at <- ymd_hms(tripdata_202111$started_at)
+tripdata_202111$ended_at <- ymd_hms(tripdata_202111$ended_at)
+
+tripdata_202112$started_at <- ymd_hms(tripdata_202112$started_at)
+tripdata_202112$ended_at <- ymd_hms(tripdata_202112$ended_at)
+
+tripdata_202201$started_at <- ymd_hms(tripdata_202201$started_at)
+tripdata_202201$ended_at <- ymd_hms(tripdata_202201$ended_at)
+
+tripdata_202202$started_at <- ymd_hms(tripdata_202202$started_at)
+tripdata_202202$ended_at <- ymd_hms(tripdata_202202$ended_at)
+
+tripdata_202203$started_at <- ymd_hms(tripdata_202203$started_at)
+tripdata_202203$ended_at <- ymd_hms(tripdata_202203$ended_at)
+
+tripdata_202204$started_at <- ymd_hms(tripdata_202204$started_at)
+tripdata_202204$ended_at <- ymd_hms(tripdata_202204$ended_at)
+
+```
+
+##### **3. Process**
+Once all dataframes are consistent in their value formats, it's time to merge them into a single file for further cleaning and analysis using rbind() function.
+
+```{r merging dataframes}
+df_12M <- rbind(tripdata_202108,
+                tripdata_202109,
+                tripdata_202110,
+                tripdata_202111,
+                tripdata_202112,
+                tripdata_202201,
+                tripdata_202202,
+                tripdata_202203,
+                tripdata_202204,
+                tripdata_202205,
+                tripdata_202206,
+                tripdata_202207)
+```
+
+After merging the individual dataframes into one the station locations and IDs columns are to be dropped. The columns required for this analysis are the ride_id, rideable_type, started_at, ended_at and member_casual. Other needed information is to be extracted from the started_at and ended_at columns. The columns for start and end station information are dropped using following code.
+
+```{r dropping station id and location columns}
+df_12M <- df_12M[-c(5:12)]
+```
+
+The ride length was calculated as the difference of the ended_at and started_at column values. Moreover, the year-month, day-of-the-week and hour-of-the-day information was also calculated for purpose of analysis .
+
+```{r calculating required values and adding columns}
+
+ride_length = as.numeric(df_12M$ended_at - df_12M$started_at)/60
+start_date <- format(as.Date(df_12M$started_at))
+start_year_month <- format(as.Date(df_12M$started_at),"%Y-%m")
+start_year <- format(as.Date(df_12M$started_at),"%Y")
+# start_month <- format(as.Date(df_12M$started_at), "%m")
+start_month <- months(as.Date(df_12M$started_at))
+start_day <- format(as.Date(df_12M$started_at), "%d")
+start_day_of_week <- format(as.Date(df_12M$started_at), "%A")
+start_hour <- format(as.POSIXct(df_12M$started_at), format = "%H")
+
+
+df_12M <- add_column(df_12M, ride_length, .after = "ended_at")
+df_12M <- add_column(df_12M, start_date, .after = "ride_length")
+df_12M <- add_column(df_12M, start_year_month, .after = "start_date")
+df_12M <- add_column(df_12M, start_year, .after = "start_year_month")
+df_12M <- add_column(df_12M, start_month, .after = "start_year")
+df_12M <- add_column(df_12M, start_day, .after = "start_month")
+df_12M <- add_column(df_12M, start_day_of_week, .after = "start_day")
+df_12M <- add_column(df_12M, start_hour, .after = "start_day_of_week")
+```
+
+Checking the data using summary() function reveals negative values in the ride_length column.
+
+```{r skimming merged data}
+summary(df_12M)
+```
+
+The observations with negative values are dropped off from the dataframe.
+
+```{r dropping observations with negative ride lengths}
+df_12M <- df_12M[!df_12M$ride_length<0,]
+```
+
+Finally before we visualize data the data has to be sorted with respect to the values in started_at column and renaming rows.
+
+```{r Ordering and renaming rows according to started_at column and giving a final check}
+df_12M <- df_12M[order(df_12M$started_at),]
+row.names(df_12M) <- NULL
+
+df_Cyclistic <- df_12M
+skim(df_Cyclistic)
+```
+
+##### **4. Analyze**
+Now that our data is clean, we need to analyze our data and for that we are going to use ggplot library.
+
+First we visualize usage by ride count for both user types.
+
+```{r plotting usage count by user category}
+
+# usage count by user type
+usage_share <- df_Cyclistic %>% 
+    group_by(member_casual) %>% 
+    summarise(ride_count = length(ride_id), 
+              ride_percentage = (length(ride_id) / nrow(df_Cyclistic)) * 100)
+
+uservsshare <- ggplot(usage_share) +
+  geom_col(mapping=aes(x=member_casual, 
+                       y=ride_count, 
+                       fill=member_casual), 
+           width=0.5,
+           position = position_dodge(width=0.5),
+           show.legend = FALSE) +
+  scale_fill_manual(values = c("casual" = "#65B100",
+                               "member" = "#14A6A1"))+
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE))+
+  labs(x="User Category", y="Usage Count", 
+       title= "Casuals vs Members Usage Share")
+
+uservsshare
+```
+
+Next we look at the mean ride length for the two user categories.
+
+```{r plotting ride length by user category}
+mean_ride_length <- df_Cyclistic %>%  
+                      group_by(member_casual) %>%
+                        summarise(mean_time = mean(ride_length))
+
+usertypevstime <- ggplot(mean_ride_length) + 
+  geom_col(mapping=aes(x=member_casual, y=mean_time, 
+                       fill=member_casual), 
+           width=0.5, 
+           position = position_dodge(width=0.5), 
+           show.legend = FALSE) +
+  scale_fill_manual(values = c("casual" = "#65B100","member" = "#14A6A1")) +
+  labs(title = "Mean travel time by User Category",x="User Category",y="Mean time in minutes")
+
+usertypevstime
+
+```
+
+We need to look at the usage data for day-of-the-week as follows
+
+```{r plotting ride count against day of the week for user category}
+# correcting the days of the week order.
+df_Cyclistic$start_day_of_week <- ordered(df_Cyclistic$start_day_of_week,
+                                          levels=c("Monday", "Tuesday",
+                                                   "Wednesday", "Thursday",
+                                                   "Friday", "Saturday",
+                                                   "Sunday"))
+df_Cyclistic %>%
+  group_by(member_casual, start_day_of_week) %>% 
+  summarise(number_of_rides = n(), 
+            .groups="drop") %>% 
+  arrange(member_casual, start_day_of_week)  %>% 
+  ggplot(aes(x = start_day_of_week, 
+             y = number_of_rides, 
+             fill = member_casual)) +
+  labs(title ="Total rides by day of the week for User Type",
+       x = "Day of Week",
+       y = "Ride Count") +
+  geom_col(width=0.5, 
+           position = position_dodge(width=0.525)) +
+  scale_y_continuous(labels = function(x) format(x, 
+                                                 scientific = FALSE))+
+  scale_fill_manual(values = c("casual" = "#65B100",
+                               "member" = "#14A6A1"))+
+  guides(fill=guide_legend(title="User Type"))
+# + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+Let's take a look at average ride time for each user category.
+
+```{r plotting average ride length against day of the week for user category}
+df_Cyclistic %>%  
+  group_by(member_casual, start_day_of_week) %>% 
+  summarise(average_ride_length = mean(ride_length), 
+            .groups="drop") %>%
+  ggplot(aes(x = start_day_of_week, 
+             y = average_ride_length, 
+             fill = member_casual)) +
+  geom_col(width=0.5, 
+           position = position_dodge(width=0.525)) + 
+  labs(title ="Average ride time by Day of the week for User Category", 
+       x = "Day of Week",
+       y = "Average Ride Length (mins)")+
+  scale_fill_manual(values = c("casual" = "#65B100",
+                               "member" = "#14A6A1"))+
+  guides(fill=guide_legend(title="User Type"))
+
+```
+
+Next we check the ride count and ride length for both user categories by month.
+
+```{r plotting ride count by month for user category}
+# correct the month order for the past year.
+df_Cyclistic$start_month <- ordered(df_Cyclistic$start_month,
+                                    levels=c("January", "February",
+                                      "March", "April", "May",
+                                      "June", "July", "August",
+                                      "September", "October",
+                                      "November", "December"))
+df_Cyclistic %>%  
+  group_by(member_casual, start_month) %>% 
+  summarise(number_of_rides = n(),
+            .groups="drop") %>% 
+  arrange(member_casual, start_month)  %>% 
+  ggplot(aes(x = start_month, 
+             y = number_of_rides, 
+             fill = member_casual)) +
+  geom_col(width=0.50, 
+           position = position_dodge(width=0.525)) +
+  labs(title ="Total rides by Month for User Category", 
+       x = "Month", 
+       y = "Number Of Rides") +
+  theme(axis.text.x = element_text(angle = 45)) +
+
+  scale_y_continuous(labels = function(x) format(x, 
+                                                 scientific = FALSE))+
+  scale_fill_manual(values = c("casual" = "#65B100",
+                               "member" = "#14A6A1"))+
+  guides(fill=guide_legend(title="User Type"))
+
+
+```
+
+Now we look at the ride length by months for user category.
+
+```{r plotting average ride length by month for user category}
+df_Cyclistic %>%  
+  group_by(member_casual, start_month) %>% 
+  summarise(average_ride_length = mean(ride_length), 
+            .groups="drop") %>%
+  ggplot(aes(x = start_month, 
+             y = average_ride_length, 
+             fill = member_casual)) +
+  geom_col(width=0.5, 
+           position = position_dodge(width=0.525)) + 
+  labs(title ="Average ride time by Month for User Category", 
+       x = "Month",
+       y = "Average Ride Length (mins)")+
+  theme(axis.text.x = element_text(angle = 45)) +
+  scale_y_continuous(labels = function(x) format(x, 
+                                                 scientific = FALSE))+
+  scale_fill_manual(values = c("casual" = "#65B100",
+                               "member" = "#14A6A1"))+
+  guides(fill=guide_legend(title="User Type"))
+
+```
+
+We also need to know the time of day difference between the rider categories
+
+```{r plotting time of day usage information for user categories}
+df_Cyclistic %>%
+  ggplot(aes(start_hour, 
+             fill= member_casual)) +
+  labs(title="Usage by Hour of the day for User Category", 
+       x = "Hour of the day",
+       y = "Number Of Rides") +
+  geom_bar()+
+  scale_y_continuous(labels = function(x) format(x, 
+                                                 scientific = FALSE))+
+  scale_fill_manual(values = c("casual" = "#65B100",
+                               "member" = "#14A6A1"))+
+  guides(fill=guide_legend(title="User Type"))
+
+```
+
+Let's observe hourly usage by day of the week
+
+```{r plotting hourly usage by day of the week}
+df_Cyclistic %>%
+  ggplot(aes(start_hour,
+             fill=member_casual)) +
+  geom_bar() +
+  labs(x="Hour of the day",
+       y="Ride Count",
+       title="Usage per hour for each day of the week") +
+  facet_wrap(~ start_day_of_week) +
+  scale_y_continuous(labels = function(x) format(x, 
+                                                 scientific = FALSE))+
+  scale_fill_manual(values = c("casual" = "#65B100",
+                               "member" = "#14A6A1"))+
+  guides(fill=guide_legend(title="User Type"))
+```
+
+
