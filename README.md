@@ -6,6 +6,7 @@ This repository contains the analysis report on the customer usage of Cyclistic 
 Cyclistic is a Chicago based bike-share company. It has two customer segments,
 1. Casual Riders
 2. Annual Members 
+
 Lily Moreno, the Director of Marketing at Cyclistic believes that the future of the company relies on increasing the number of Annual Members and thus desires analysis of the usage behaviour of both customer segments to gain insights so that marketing campaigns can be designed to convert casual riders into annual members.
 
 ## Analysis Process
