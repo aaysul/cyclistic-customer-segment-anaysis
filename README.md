@@ -34,7 +34,7 @@ After ensuring consistency the data was merged as a first step in processing ste
 Once the process part was complete it was time for analysis. Usage of the Cyclistic bikes by both segments were analyzed based on hour of the day, day of the week, weekly and monthly usage trends. Relevant charts were prepared to provide the insights into the usage behaviour for casual riders and annual members in these timelines.
 
 ### 5. Share 
-The analysis has been carried out using R programming language in RStudio. The report has been prepare in R markdown format. Click [report](https://github.com/aaysul/data-analytics-capstone/blob/main/Cyclistic_Analysis.Rmd) to view.
+The analysis has been carried out using R programming language in RStudio. The report has been prepare in R markdown format. Click [code](https://github.com/aaysul/data-analytics-capstone/blob/main/Cyclistic_Analysis.Rmd) to view the R markdown. Click [report](https://github.com/aaysul/data-analytics-capstone/blob/main/Cyclistic_Analysis.pdf) to view the final report in pdf format.
 
 ### 6. Act
 The final part is to act on the provided insights based on the suggestions of the analytics team. The suggestions were forwarded to the marketing team at the end of the report.
