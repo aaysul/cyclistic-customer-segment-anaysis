@@ -1,4 +1,4 @@
-# [Cyclistic Bike-Share Customer Segment Analysis](https://github.com/aaysul/data-analytics-capstone)
+# [Cyclistic Bike-Share Customer Segment Analysis](https://github.com/aaysul/cyclistic-customer-segment-anaysis)
 
 This repository contains the analysis report on the customer usage of Cyclistic bikes. Cyclistic is a fictional bike-share company in Chicago. The report provides details on the step by step process to identify usage behaviour of Cyclistic's customers. The project has been completed in R language using RStudio and shared as a pdf report. 
 
@@ -34,7 +34,7 @@ After ensuring consistency the data was merged as a first step in processing ste
 Once the process part was complete it was time for analysis. Usage of the Cyclistic bikes by both segments were analyzed based on hour of the day, day of the week, weekly and monthly usage trends. Relevant charts were prepared to provide the insights into the usage behaviour for casual riders and annual members in these timelines.
 
 ### 5. Share 
-The analysis has been carried out using R programming language in RStudio. The report has been prepare in R markdown format. Click [code](https://github.com/aaysul/data-analytics-capstone/blob/main/Cyclistic_Analysis.Rmd) to view the R markdown. Click [report](https://github.com/aaysul/data-analytics-capstone/blob/main/Cyclistic_Analysis.pdf) to view the final report in pdf format.
+The analysis has been carried out using R programming language in RStudio. The report has been prepare in R markdown format. Click [code](https://github.com/aaysul/cyclistic-customer-segment-anaysis/blob/main/Cyclistic_Analysis.Rmd) to view the R markdown. Click [report](https://github.com/aaysul/cyclistic-customer-segment-anaysis/blob/main/Cyclistic_Analysis.pdf) to view the final report in pdf format.
 
 ### 6. Act
 The final part is to act on the provided insights based on the suggestions of the analytics team. The suggestions were forwarded to the marketing team at the end of the report.
