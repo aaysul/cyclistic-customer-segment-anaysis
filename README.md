@@ -1,6 +1,6 @@
 # [Cyclistic Bike-Share Customer Segment Analysis](https://github.com/aaysul/data-analytics-capstone)
 
-This repository contains the analysis report on the customer usage of Cyclistic bikes. Cyclistic is a fictional bike-share company in Chicago. The report provides details on the step by step process to identify usage behaviour of Cyclistic's customers. The project has been completed in R language using RStudio and shared via markdown file. 
+This repository contains the analysis report on the customer usage of Cyclistic bikes. Cyclistic is a fictional bike-share company in Chicago. The report provides details on the step by step process to identify usage behaviour of Cyclistic's customers. The project has been completed in R language using RStudio and shared as a pdf report. 
 
 ## Scenario:
 Cyclistic is a Chicago based bike-share company. It has two customer segments,
